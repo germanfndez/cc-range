@@ -13,13 +13,19 @@ Thirty seconds from the first shot. Every hit makes the next target smaller, fas
 shorter-lived — 2.7 seconds on its fuse at the start, three quarters of one by the end. Let the
 fuse run out and the target leaves on its own, and takes your streak with it.
 
-## Run it
+Needs function hooks (early access, `CLAUDE_CODE_ENABLE_FUNCTION_HOOKS=1`) and an interactive
+terminal.
+
+## Install
 
 ```
-CLAUDE_CODE_ENABLE_FUNCTION_HOOKS=1 claude --plugin-dir /path/to/cc-range
+/plugin marketplace add germanfndez/cc-range
+/plugin install cc-range@cc-range
 ```
 
 Then `/range`. Click the board once to give it the keyboard; `Esc` hands it back to the prompt.
+
+Working on it instead? `CLAUDE_CODE_ENABLE_FUNCTION_HOOKS=1 claude --plugin-dir /path/to/cc-range`.
 
 | | |
 |---|---|

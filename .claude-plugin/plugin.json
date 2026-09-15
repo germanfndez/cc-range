@@ -1,8 +1,20 @@
 {
   "name": "cc-range",
   "version": "0.1.0",
-  "description": "A first-person pixel-art shooting gallery above the Claude Code prompt: aim with the pointer, fire, hit the bullseye and it moves somewhere else.",
-  "author": { "name": "German Fernandez" },
+  "description": "A first-person pixel-art shooting gallery above the Claude Code prompt: thirty-second rounds, targets that shrink and drift, eight rotating backdrops, and a chiptune. Needs function hooks (early access) and an interactive terminal.",
+  "author": {
+    "name": "German Fernandez",
+    "url": "https://github.com/germanfndez"
+  },
   "license": "MIT",
-  "keywords": ["game", "shooter", "terminal", "function-hooks", "arcade", "pixel-art"]
+  "keywords": [
+    "game",
+    "shooter",
+    "terminal",
+    "function-hooks",
+    "arcade",
+    "pixel-art"
+  ],
+  "homepage": "https://github.com/germanfndez/cc-range",
+  "repository": "https://github.com/germanfndez/cc-range"
 }

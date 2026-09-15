@@ -1,0 +1,14 @@
+{
+  "name": "cc-range",
+  "owner": { "name": "German Fernandez", "url": "https://github.com/germanfndez" },
+  "metadata": { "description": "cc-range: a first-person shooting gallery inside Claude Code" },
+  "plugins": [
+    {
+      "name": "cc-range",
+      "source": "./",
+      "description": "A first-person pixel-art shooting gallery above the Claude Code prompt: thirty-second rounds, eight backdrops, and a chiptune, all drawn with function hooks",
+      "repository": "https://github.com/germanfndez/cc-range",
+      "license": "MIT"
+    }
+  ]
+}
