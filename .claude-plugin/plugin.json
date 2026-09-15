@@ -1,0 +1,8 @@
+{
+  "name": "cc-range",
+  "version": "0.1.0",
+  "description": "A first-person pixel-art shooting gallery above the Claude Code prompt: aim with the pointer, fire, hit the bullseye and it moves somewhere else.",
+  "author": { "name": "German Fernandez" },
+  "license": "MIT",
+  "keywords": ["game", "shooter", "terminal", "function-hooks", "arcade", "pixel-art"]
+}

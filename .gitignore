@@ -1,0 +1,6 @@
+# Claude Code writes these; run /plugin-types to get them
+.claude/types/
+
+.atl/
+node_modules/
+.DS_Store
