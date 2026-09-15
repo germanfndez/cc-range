@@ -65,8 +65,7 @@ request, up to and including the React tree it renders. Buried in that thread,
 [cc-arcade](https://github.com/sezaakgun/cc-arcade): Tetris and seven other games above the
 prompt, playable while Claude works. That comment is why this exists.
 
-Its write-up saved me the first day of the work, and the notes below are what I paid for on my
-own, in the order the mistakes happened.
+Its write-up saved me the first day of the work.
 
 ## Develop
 
@@ -84,41 +83,6 @@ bunx tsc --noEmit -p tsconfig.json  # run /plugin-types in Claude Code first,
 `tools/shot.ts` packs the canvas into quadrant cells and paints each one back out at 4×, so the
 PNG is exactly what the terminal shows. Judging pixel art by squinting at ANSI in a scrollback is
 not a thing you can do.
-
-### What cost me time
-
-- **Never name a local `h` in a surface module.** Every JSX tag compiles to a call of `h`, so a
-  local shadows the factory and the tree throws `TypeError: h is not a function`.
-- **`Client`'s `module` must be a string literal.** The engine reads the path off the source; a
-  variable is refused at load.
-- **A canvas pixel is half as wide as it is tall.** The buffer is twice the cell grid in both
-  directions, but a terminal cell is about 1∶2, so anything round is an ellipse twice as wide as
-  it is high — and the hit test has to agree with that, or you hit where you cannot see.
-- **Play sounds from a timer, never inside the dispatch that asked for them.** A call of the
-  dispatch's own is abandoned with it, and the game runs silent. *A promise chained off the
-  dispatch is the same trap wearing a disguise*: `winding.then(() => $.audio.play(...))` lands
-  after the dispatch has returned and is dropped just the same. That one cost me the music on the
-  opening screen, and it took a user report to find.
-- **`$.audio.play` refuses a fifth concurrent play.** A gallery asks for one every few frames, so
-  `register.tsx` keeps its own count and a floor between starts. The shot is allowed past the
-  floor: it is the sound the player is waiting for, and losing it is worse than overlapping it.
-- **Aborting a loop only asks it to stop.** Start the next one before the old one has finished and
-  the old one keeps playing with nothing holding its controller — a track that can never be
-  stopped again.
-- **A looping clip has to end where it begins.** Wrapping note tails round with a modulo leaves
-  the last sample and the first at unrelated points of their waveforms, and every time round that
-  step is a click — 10553 against a typical step of 56, in the first version.
-  `make-music.mjs` renders a quarter-second past the end and folds it over the head instead.
-- **An inverse map rotates a sprite by `-theta`.** Get the sign wrong and the gun leans away from
-  the pointer instead of after it.
-- **A gun that rotates about a pivot on screen looks broken.** Two attempts died here. With the
-  barrel pointing up, the perpendicular is horizontal, so the grip swings out sideways and the
-  whole thing reads as a tumbling object. What works is a pivot far below the band with only the
-  top of the gun visible: then a rotation is a flat sweep, and nothing can swing anywhere wrong.
-- **`{ ...obj, k: fn(obj) }` throws away what `fn` wrote to `obj`.** The spread is evaluated
-  first. `place()` advances the RNG seed by mutating the game it is handed, so written that way
-  the seed never moved and every target landed in the same four spots. Call it into a variable,
-  spread afterwards.
 
 ## Layout
 
