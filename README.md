@@ -7,13 +7,11 @@ every hit moves the target somewhere else and adds a point.
 It runs on **function hooks**, so it draws itself, takes your mouse and keyboard, and costs zero
 tokens. You can play it while Claude works.
 
-![the range](docs/play.png)
+![cc-range running above the prompt](docs/demo.gif)
 
 Thirty seconds from the first shot. Every hit makes the next target smaller, faster, and
 shorter-lived — 2.7 seconds on its fuse at the start, three quarters of one by the end. Let the
 fuse run out and the target leaves on its own, and takes your streak with it.
-
-![the start screen](docs/start.png)
 
 ## Run it
 
@@ -46,11 +44,11 @@ ridges, and weather: sun, birds, clouds, stars, rainfall, snowfall, cacti. **The
 with it**, so it is planks, then brick, then nothing but posts in open grass, then hay bales,
 corrugated iron, wet stone, a rope of bunting, and an adobe wall.
 
-![a meadow on posts](docs/meadow.png)
+![a brick wall at noon](docs/brick.png)
 
-![a starlit night](docs/night.png)
+![a meadow on posts, with no wall at all](docs/meadow.png)
 
-![the desert](docs/desert.png)
+![planks at dawn](docs/planks.png)
 
 Everything you hear is synthesised by the two scripts in `tools/`: the shot, the ring of the
 plate, the miss, and a sixteen-bar chiptune in A minor that plays under the whole thing. Nothing

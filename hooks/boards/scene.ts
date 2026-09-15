@@ -6,7 +6,7 @@
 // the packed row down to a handful of runs. Nothing here is measured in cells: a canvas pixel is
 // half as tall as it is wide, so every round thing is drawn as an ellipse twice as wide as high.
 
-import { canvas, disc, put, rect, stamp, textWidth, type Canvas } from './paint.ts'
+import { canvas, disc, put, rect, smallWidth, stamp, stampSmall, textWidth, type Canvas } from './paint.ts'
 import { COUNTER as COUNTER_AT, HORIZON, sceneAt, secondsLeft, type Range } from '../game/range.ts'
 
 export type Mode = 'ready' | 'play' | 'over'
@@ -482,7 +482,7 @@ const startPanel = (c: Canvas, g: Range, mode: Mode, best: number) => {
   const label = over ? 'PLAY AGAIN' : 'START'
   // the plate has to clear the score line above it and the legend below it, so it is sized off
   // the band rather than off the text
-  const ts = c.h >= 46 && c.w > 150 ? 2 : 1
+  const ts = c.h >= 46 && textWidth(label, 2) + 44 <= c.w ? 2 : 1
   const h = ts * 7 + 8
   const w = Math.min(c.w - 20, textWidth(label, ts) + 22)
   const x = Math.round((c.w - w) / 2)
@@ -496,7 +496,14 @@ const startPanel = (c: Canvas, g: Range, mode: Mode, best: number) => {
   stamp(c, label, x + (w - textWidth(label, ts)) / 2, y + (h - ts * 7) / 2, ts, 0xf4fff2, 0x0d2a12)
 
   if (over) {
-    const sub = `${g.score} HITS - ${accuracyOf(g)}% - BEST ${Math.max(best, g.score)}`
+    // the longest line the band will take, not the longest line there is
+    const forms = [
+      `${g.score} HITS - ${accuracyOf(g)}% - BEST ${Math.max(best, g.score)}`,
+      `${g.score} - ${accuracyOf(g)}% - BEST ${Math.max(best, g.score)}`,
+      `${g.score} - ${accuracyOf(g)}%`,
+      `${g.score}`,
+    ]
+    const sub = forms.find(f => textWidth(f, 1) <= c.w - 8) ?? forms[forms.length - 1]!
     stamp(c, sub, Math.round((c.w - textWidth(sub, 1)) / 2), y + h + 5, 1, GOLD, INK)
   }
 }
@@ -520,19 +527,21 @@ export const frame = (g: Range, columns: number, rows: number, mode: Mode, best:
 
   // one band of sky, so the score, the record and the clock share a line
   const label = String(g.score)
-  const s = c.h >= 46 ? 2 : 1
+  // the face is twice as wide as it was now that a glyph pixel is two canvas pixels across,
+  // so the big size only earns its room on a tall band
+  const s = c.h >= 72 ? 2 : 1
   const topLine = Math.max(2, Math.round(c.h * HORIZON * 0.5 - s * 3.5))
   stamp(c, label, 4, topLine, s, GOLD, INK)
 
-  // the record on its own line under the score, and the streak beside it
-  const under = topLine + s * 7 + 2
+  // the record on its own line under the score, and the streak beside it, both in the small face
+  const under = topLine + s * 7 + 3
   const record = `BEST ${Math.max(best, g.score)}`
-  stamp(c, record, 4, under, 1, g.score > best ? GOLD : 0xcfd6e0, INK)
-  if (g.streak > 1) stamp(c, `X${g.streak}`, 4 + textWidth(record, 1) + 6, under, 1, 0xffffff, INK)
+  stampSmall(c, record, 4, under, g.score > best ? GOLD : 0xcfd6e0, INK)
+  if (g.streak > 1) stampSmall(c, `X${g.streak}`, 4 + smallWidth(record) + 8, under, 0xffffff, INK)
 
   const left = secondsLeft(g)
   const clock = `${left}`
-  stamp(c, clock, c.w - textWidth(clock, s) - 4, topLine, s, left <= 5 && mode === 'play' ? 0xff5a46 : 0xffffff, INK)
+  stampSmall(c, clock, c.w - smallWidth(clock, 2) - 4, topLine, left <= 5 && mode === 'play' ? 0xff5a46 : 0xffffff, INK, 2)
 
   if (mode !== 'play') startPanel(c, g, mode, best)
 

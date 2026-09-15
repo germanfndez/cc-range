@@ -106,7 +106,11 @@ const GLYPHS: Record<string, string> = {
 
 export const GLYPH_W = 5
 export const GLYPH_H = 7
-export const textWidth = (s: string, scale: number) => Math.max(0, s.length * (GLYPH_W + 1) * scale - scale)
+// A canvas pixel is half as wide as it is tall once the quadrants are packed onto a terminal's
+// cells, so a glyph pixel has to be two canvas pixels wide to come out square. Drawn one for one,
+// the whole face reads stretched to nearly three times its height.
+const PX = 2
+export const textWidth = (s: string, scale: number) => Math.max(0, s.length * (GLYPH_W + 1) * scale * PX - scale * PX)
 
 // `outline` draws the character one pixel out in every direction first, which is what keeps the
 // white score legible over a pipe and over the sky both
@@ -119,15 +123,70 @@ export const stamp = (c: Canvas, s: string, x: number, y: number, scale: number,
         const line = rows[ry]!
         for (let rx = 0; rx < GLYPH_W; rx++) {
           if (line[rx] !== '#') continue
-          rect(c, at + rx * scale, y + oy + ry * scale, scale, scale, tint)
+          rect(c, at + rx * scale * PX, y + oy + ry * scale, scale * PX, scale, tint)
         }
       }
-      at += (GLYPH_W + 1) * scale
+      at += (GLYPH_W + 1) * scale * PX
     }
   }
   if (outline !== undefined) {
     for (let oy = -scale; oy <= scale; oy += scale) {
-      for (let ox = -scale; ox <= scale; ox += scale) if (ox || oy) draw(ox, oy, outline)
+      for (let ox = -scale * PX; ox <= scale * PX; ox += scale * PX) if (ox || oy) draw(ox, oy, outline)
+    }
+  }
+  draw(0, 0, color)
+}
+
+// ── a 3x5 face, for the readouts ────────────────────────────────────────────────────────────
+// The 5x7 face above is a display size: every glyph pixel is a whole cell wide, so a word of it
+// eats a third of the band. The readouts — the record, the streak, the clock — get this instead.
+const SMALL: Record<string, string> = {
+  A: '.#.|#.#|###|#.#|#.#',
+  B: '##.|#.#|##.|#.#|##.',
+  C: '.##|#..|#..|#..|.##',
+  E: '###|#..|##.|#..|###',
+  H: '#.#|#.#|###|#.#|#.#',
+  I: '###|.#.|.#.|.#.|###',
+  S: '.##|#..|.#.|..#|##.',
+  T: '###|.#.|.#.|.#.|.#.',
+  X: '#.#|#.#|.#.|#.#|#.#',
+  '0': '###|#.#|#.#|#.#|###',
+  '1': '.#.|##.|.#.|.#.|###',
+  '2': '##.|..#|.#.|#..|###',
+  '3': '##.|..#|.#.|..#|##.',
+  '4': '#.#|#.#|###|..#|..#',
+  '5': '###|#..|##.|..#|##.',
+  '6': '.##|#..|###|#.#|###',
+  '7': '###|..#|.#.|.#.|.#.',
+  '8': '###|#.#|###|#.#|###',
+  '9': '###|#.#|###|..#|##.',
+  '%': '#.#|..#|.#.|#..|#.#',
+  '-': '...|...|###|...|...',
+  ' ': '...|...|...|...|...',
+}
+
+const SMALL_W = 3
+const SMALL_H = 5
+export const smallWidth = (s: string, scale = 1) => Math.max(0, s.length * (SMALL_W + 1) * scale * PX - scale * PX)
+
+export const stampSmall = (c: Canvas, s: string, x: number, y: number, color: number, outline?: number, scale = 1) => {
+  const draw = (ox: number, oy: number, tint: number) => {
+    let at = x + ox
+    for (const ch of s.toUpperCase()) {
+      const rows = (SMALL[ch] ?? SMALL[' ']!).split('|')
+      for (let ry = 0; ry < SMALL_H; ry++) {
+        const line = rows[ry]!
+        for (let rx = 0; rx < SMALL_W; rx++) {
+          if (line[rx] !== '#') continue
+          rect(c, at + rx * scale * PX, y + oy + ry * scale, scale * PX, scale, tint)
+        }
+      }
+      at += (SMALL_W + 1) * scale * PX
+    }
+  }
+  if (outline !== undefined) {
+    for (let oy = -scale; oy <= scale; oy += scale) {
+      for (let ox = -scale * PX; ox <= scale * PX; ox += scale * PX) if (ox || oy) draw(ox, oy, outline)
     }
   }
   draw(0, 0, color)

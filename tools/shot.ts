@@ -13,7 +13,9 @@ const columns = Number(process.argv[3] ?? 100)
 const rows = Number(process.argv[4] ?? 24)
 const shots = Number(process.argv[5] ?? 4)
 const mode = (process.env.MODE ?? 'play') as 'ready' | 'play'
-const ZOOM = 4
+// a cell is about half as wide as it is tall, and holds two canvas pixels each way
+const ZW = 3
+const ZH = 6
 
 let g: Range = newRange(columns * 2, rows * 2, 20260915)
 for (let i = 0; i < shots; i++) {
@@ -37,13 +39,13 @@ const MASK: Record<string, number> = {
 if (process.env.SCENE) g = { ...g, ticks: Number(process.env.SCENE) * 5 * 15 + Number(process.env.T ?? 0) }
 const view = frame(g, columns, rows, mode, Number(process.env.BEST ?? 12), process.env.MUTED === '1')
 const maxRuns = Math.max(6, Math.floor(1500 / rows) - 1)
-const W = columns * 2 * ZOOM
-const H = rows * 2 * ZOOM
+const W = columns * 2 * ZW
+const H = rows * 2 * ZH
 const px = Buffer.alloc(W * H * 3)
 
 const dot = (x: number, y: number, v: number) => {
-  for (let yy = y * ZOOM; yy < (y + 1) * ZOOM; yy++) {
-    for (let xx = x * ZOOM; xx < (x + 1) * ZOOM; xx++) {
+  for (let yy = y * ZH; yy < (y + 1) * ZH; yy++) {
+    for (let xx = x * ZW; xx < (x + 1) * ZW; xx++) {
       const i = (yy * W + xx) * 3
       px[i] = (v >> 16) & 0xff; px[i + 1] = (v >> 8) & 0xff; px[i + 2] = v & 0xff
     }

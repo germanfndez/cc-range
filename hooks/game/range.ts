@@ -49,7 +49,7 @@ export const COUNTER = 0.84
 // The score and the record sit in the top left, the round clock in the top right, and a target
 // under either is a target you cannot read. Widths are in canvas pixels, because the lettering is
 // a fixed size; the depth is a fraction of the band.
-export const HUD = { left: 70, right: 40, bottom: 0.58 }
+export const HUD = { left: 80, right: 48, bottom: 0.58 }
 
 // the backdrop behind the wall changes every five seconds
 export const SCENE_SECONDS = 5
